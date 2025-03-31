@@ -14,6 +14,7 @@ const leftContent = document.querySelector(".leftcontent");
 const rightContent = document.querySelector(".rightcontent");
 const mainDiv = document.querySelector(".main");
 const processedLines = new Set();
+let needProcess = undefined;
 
 function mainDivScalePosition() {
     const scaleX = mainDiv.clientWidth / 1280;
@@ -219,6 +220,7 @@ function updateLyrics() {
     const currentTime = audioPlayer.currentTime;
     const lyricLines = document.querySelectorAll('.lyrics > *');
     let activeIndex = 0;
+    needProcess = false;
 
     for (let i = 0; i < lyrics.length; i++) {
         if (currentTime >= lyrics[i].time) {
@@ -233,41 +235,62 @@ function updateLyrics() {
 
         if (distance <= 8) {
             if (index === activeIndex) {
+                if (!processedLines.has(index) && lyricLines[index + 1])
+                    needProcess = true;
+
+                if (needProcess && index >= 1) {
+                    line.style.marginTop = `${lyricLines[index - 1].clientHeight * 2}px`;
+                    console.log(1);
+
+                    setTimeout(() => {
+                        line.style.marginTop = "6px";
+                        processedLines.add(index);
+                    }, 100);
+                }
+
                 void line.offsetWidth;
                 line.classList.add("highlight");
                 line.style.filter = "none";
                 line.style.marginLeft = "0";
                 line.style.visibility = "visible";
 
-                if (!processedLines.has(index) && lyricLines[index + 1]) {
-                    // lyricLines[index + 1].style.transition = "margin-top 0.2s ease-out";
-                    lyricLines[index + 1].style.marginTop = `${line.clientHeight - 6}px`;
+                setTimeout(() => {
+                    if (needProcess) {
+                        lyricLines[index + 1].style.marginTop = `${line.clientHeight - 6}px`;
+                        console.log(2);
 
-                    setTimeout(() => {
-                        lyricLines[index + 1].style.marginTop = "6px";
-                        processedLines.add(index);
-                    }, 100);
-                }
+                        setTimeout(() => {
+                            lyricLines[index + 1].style.marginTop = "6px";
+                            processedLines.add(index);
+                        }, 100);
+                    }
+                }, 200);
             } else {
                 void line.offsetWidth;
                 line.classList.remove("highlight");
                 line.style.filter = `blur(${distance * 0.5}px)`;
                 line.style.marginLeft = `${distance * 1.25}px`;
-                // line.style.display = "block";
                 line.style.visibility = "visible";
 
                 if (distance >= 9) {
-                    // line.style.display = "none";
                     line.style.visibility = "hidden";
                 }
             }
         } else {
-            // line.style.display = "none";
             line.style.visibility = "hidden";
         }
     });
 
     if (activeIndex >= 0) {
+        // setTimeout(() => {
+        //     const activeLine = lyricLines[activeIndex];
+        //     if (activeLine) {
+        //         const containerHeight = document.querySelector(".lyricscontainer").clientHeight;
+        //         const activeLineOffset = activeLine.offsetTop;
+        //         const offset = (containerHeight / 2) - activeLineOffset - 0.1 * containerHeight;
+        //         lyricsElement.style.top = `${offset}px`;
+        //     }
+        // }, 100);
         const activeLine = lyricLines[activeIndex];
         if (activeLine) {
             const containerHeight = document.querySelector(".lyricscontainer").clientHeight;

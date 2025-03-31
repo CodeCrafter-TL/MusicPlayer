@@ -1,15 +1,25 @@
 @font-face {
-    src: url(./PingFangSC-Regular.woff2);
-    font-family: "PingFang";
+    src: url(./fonts/PingFangTC-Regular.woff2);
+    font-family: "PingFang TC";
 }
 
 @font-face {
-    src: url(./sf-pro-display_regular.woff2);
+    src: url(./fonts/PingFangSC-Regular.woff2);
+    font-family: "PingFang SC";
+}
+
+@font-face {
+    src: url(./fonts/NotoSansTC-VariableFont_wght.woff2);
+    font-family: "Noto Sans TC Thin";
+}
+
+@font-face {
+    src: url(./fonts/sf-pro-display_regular.woff2);
     font-family: "SFPro";
 }
 
 * {
-    font-family: "SFPro", "PingFang";
+    font-family: "SFPro", "PingFang TC", "PingFang SC", "NotoSans TC Thin";
     -webkit-user-select: none;
     user-select: none;
 }
@@ -161,6 +171,36 @@ p {
     color: #fff;
 }
 
+@keyframes lyricline_highlight {
+    0% {
+        scale: 1;
+        transform-origin: 0px 50%;
+        opacity: 0.3;
+        /* letter-spacing: 0.03rem; */
+    }
+    100% {
+        scale: 1.2;
+        transform-origin: 0px 50%;
+        opacity: 1;
+        /* letter-spacing: 0.2rem; */
+    }
+}
+
+@keyframes lyricline_highlight_reverse {
+    100% {
+        scale: 1;
+        transform-origin: 0px 50%;
+        opacity: 0.3;
+        /* letter-spacing: 0.03rem; */
+    }
+    0% {
+        scale: 1.2;
+        transform-origin: 0px 50%;
+        opacity: 1;
+        /* letter-spacing: 0.2rem; */
+    }
+}
+
 .lyrics div {
     margin: 2% 0;
     opacity: 0.3;
@@ -170,22 +210,31 @@ p {
         font-weight 0.75s cubic-bezier(0.25, 0.8, 0.25, 1),
         margin-left 0.75s cubic-bezier(0.25, 0.8, 0.25, 1),
         margin-top 0.75s cubic-bezier(0.25, 0.8, 0.25, 1);
-    width: 100%;
+    width: 70%;
     text-shadow: 0 1px 5px #000;
     font-weight: normal;
     font-size: inherit;
     margin-top: 2%;
     font-size: 28px;
+    align-self: flex-start;
+    scale: 1;
+    transform-origin: 0px 50%;
+    animation: lyricline_highlight_reverse 0.3s ease-out;
+    /* letter-spacing: 0.03rem; */ /*挺好的字间距变换效果，可惜会导致换行问题，故注释掉了*/
 }
 
 .lyrics div.highlight {
     margin: 2% 0;
     opacity: 1;
-    font-size: 32px;
+    /* font-size: 32px; */
     font-weight: bold;
     filter: none;
-    width: 100%;
+    /* width: 85%; */
     margin-top: 2%;
+    scale: 1.2;
+    transform-origin: 0px 50%;
+    animation: lyricline_highlight 0.3s ease-out;
+    /* letter-spacing: 0.2rem; */ /*挺好的字间距变换效果，可惜会导致换行问题，故注释掉了*/
 }
 
 .background {

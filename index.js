@@ -112,13 +112,33 @@ audioFileInput.addEventListener("change", (event) => {
         } else if (file.type.startsWith('text/') || file.name.toLowerCase().endsWith(".lrc")) {
             reader = new FileReader();
             reader.onload = function(e) {
+                const buffer = e.target.result;
+                // 常见编码检测顺序：UTF-8 > GBK > Big5 > Shift_JIS
+                const encodings = ['utf-8', 'gbk', 'big5', 'shift_jis'];
+                let decodedText = '';
+                
+                for (const encoding of encodings) {
+                    try {
+                        const decoder = new TextDecoder(encoding, {fatal: true});
+                        decodedText = decoder.decode(new Uint8Array(buffer));
+                        break; // 解码成功则退出循环
+                    } catch (e) {
+                        continue; // 尝试下一种编码
+                    }
+                }
+
+                if (!decodedText) {
+                    // 所有编码尝试失败，使用默认UTF-8并替换非法字符
+                    decodedText = new TextDecoder('utf-8', {fatal: false}).decode(new Uint8Array(buffer));
+                }
+
                 enableLyric();
-                lrcData = e.target.result;
+                lrcData = decodedText;
                 lyrics = parseLrc(lrcData);
                 lyricsElement = document.querySelector(".lyrics");
                 lyricsElement.innerHTML = lyrics.map(line => `<div>${line.text}</div>`).join('');
             };
-            reader.readAsText(file);
+            reader.readAsArrayBuffer(file); // 改为读取ArrayBuffer
             lrcLoaded = true;
         }
     }

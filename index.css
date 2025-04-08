@@ -184,13 +184,13 @@ p {
 .lyrics div {
     margin: 2% 0;
     opacity: 0.3;
-    will-change: opacity, font-size, font-weight, margin-left, margin-top, scale;
+    will-change: opacity, font-weight, margin-left, margin-top, transition;
     transition: opacity 0.75s cubic-bezier(0.25, 0.8, 0.25, 1),
-        font-size 0.75s cubic-bezier(0.25, 0.8, 0.25, 1),
+        /* font-size 0.75s cubic-bezier(0.25, 0.8, 0.25, 1), */
         font-weight 0.75s cubic-bezier(0.25, 0.8, 0.25, 1),
         margin-left 0.75s cubic-bezier(0.25, 0.8, 0.25, 1),
         margin-top 0.75s cubic-bezier(0.25, 0.8, 0.25, 1),
-        scale 0.75s cubic-bezier(0.25, 0.8, 0.25, 1);
+        transition 0.75s cubic-bezier(0.25, 0.8, 0.25, 1);
     width: 70%;
     text-shadow: 0 1px 5px #000;
     font-weight: normal;
@@ -198,7 +198,7 @@ p {
     margin-top: 2%;
     font-size: 28px;
     align-self: flex-start;
-    scale: 1;
+    transform: scale(1);
     transform-origin: 0px 50%;
     word-wrap: break-word;
     white-space: normal;
@@ -213,7 +213,7 @@ p {
     filter: none;
     /* width: 85%; */
     margin-top: 2%;
-    scale: 1.2;
+    transform: scale(1.2);
     transform-origin: 0px 50%;
     word-wrap: break-word;
     white-space: normal;

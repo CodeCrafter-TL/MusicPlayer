@@ -25,7 +25,7 @@ function mainDivScalePosition(width, height) {
     const scaleY = mainDiv.clientHeight / height;
     const scale = Math.max(scaleX, scaleY);
 
-    mainDiv.style.transform = `scale(${scale})`;
+    mainDiv.style.transform = `matrix(${scale}, 0, 0, ${scale}, 0, 0)`;
     mainDiv.style.top = `calc(50% - ${mainDiv.clientHeight / 2}px)`;
     mainDiv.style.left = `calc(50% - ${mainDiv.clientWidth / 2}px)`;
     if (width === 1280) {

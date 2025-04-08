@@ -9,8 +9,13 @@
 }
 
 @font-face {
+    src: url(./fonts/SFProJP_regular.woff2);
+    font-family: "SFProJP";
+}
+
+@font-face {
     src: url(./fonts/HelveticaNeueCyr-Roman.woff2);
-    font-family: "Helvetica Neue Roman";
+    font-family: "Helvetica Neue";
 }
 
 @font-face {
@@ -24,7 +29,7 @@
 }
 
 * {
-    font-family: "SFPro", "PingFang TC", "PingFang SC", "Helvetica Neue Roman", "Arial-Unicode";
+    font-family: "SFPro", "PingFang TC", "PingFang SC", "SFProJP", "Helvetica Neue", "Arial-Unicode";
     -webkit-user-select: none;
     user-select: none;
 }

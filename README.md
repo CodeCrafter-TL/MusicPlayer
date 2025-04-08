@@ -14,7 +14,7 @@ The project is aimed to reproduce an Apple-Music-like rolling lyrics effect. It 
 ## 版权相关 / Copyrights
 程序本体开源，可以自由使用，但其`/TestAudio/`目录下文件版权归原作者所有，仅供测试使用，未经原作者允许不得转载商用。
 
-The program itself is open source, meaning that everyone have the permission to copy / learn from / modify / reference the code under the regulations of the open source license by default. However, files under `/TestAudio/` are only for testing, and their copyrights are owned by their original author(s). Therefore please DO NOT reference / modify redistribute those files without the permission of the original author.
+The program itself is open source, meaning that everyone have the permission to copy / learn from / modify / reference the code under the regulations of the open source license by default. However, files under `/TestAudio/` are only for testing, and their copyrights are owned by their original author(s). Therefore please DO NOT reference / modify / redistribute those files without the permission of the original author.
 
 ## 问题反馈和贡献 / Feedback and Contributing
 任何程序问题，请在Issue 内反馈，将会有贡献者或其他用户与您讨论。

@@ -94,9 +94,9 @@ audioPlayer.addEventListener("loadedmetadata", () => {
 });
 
 audioFileInput.addEventListener("change", (event) => async function() {
-    const files = event.target.files;
     hideChoosefileMenu();
     setLoadingState(true);
+    const files = event.target.files;
     await loadFiles(files);
     setLoadingState(false);
 });

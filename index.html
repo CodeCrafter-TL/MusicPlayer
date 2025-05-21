@@ -63,8 +63,7 @@
         <div class="rightcontent">
             <div class="lyricscontainer">
                 <div class="lyrics">
-                    <p class="highlight" id="choosefile_tip_zh">点击音乐图标选择音频、文件和lrc文件</p>
-                    <!-- <p class="highlight" id="choosefile_tip_en">Click the music icon to choose audio, cover and lyrics files</p> -->
+                    <p class="highlight" id="choosefile_tip_en">Hit the album cover to select files</p>
                 </div>
             </div>
         </div>
@@ -97,11 +96,13 @@
 
     <script src="./index.js"></script>
     <!-- <script>
-        lyrics.push({time: 0, text: "点击音乐图标选择音频、文件和lrc文件"});
-        lyrics.push({time: 1, text: "Click the music icon to choose audio, cover and lyrics files"});
+        lyrics = [
+            { time: 0, text: "Welcome!" },
+            { time: 1, text: "Hit the album cover to select files" }
+        ];
         lyricsElement = document.querySelector(".lyrics");
         lyricsElement.innerHTML = lyrics.map(line => `<p data-text="${line.text}">${line.text}</p>`).join('');
-        requestAnimationFrame(updateLyrics);
+        updateLyrics();
     </script> -->
 </body>
 

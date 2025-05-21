@@ -56,7 +56,7 @@ body {
     backdrop-filter: blur(20px); */
     z-index: 2;
     margin: 0;
-    background: #e8e8e8;
+    background: var(--background, #000);
 }
 
 .main {

@@ -363,6 +363,7 @@ p {
     will-change: transform, opacity;
     transform: scale(.5);
     transition: transform 0.15s ease-out, opacity 0.15s ease-out;
+    pointer-events: none;
 }
 
 #choosefile_menu {
@@ -505,8 +506,9 @@ p {
 
 #page_cover.hidden {
     opacity: 0;
-    width: 0;
-    height: 0;
+    /* width: 0;
+    height: 0; */
+    pointer-events: none;
     transition: opacity 0.15s linear;
 }
 

@@ -370,6 +370,7 @@ p {
     display: flex;
     opacity: 1;
     backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     background-color: #00000040;
     border-radius: 10px;
     max-width: 80%;

@@ -96,7 +96,9 @@ audioPlayer.addEventListener("loadedmetadata", () => {
 audioFileInput.addEventListener("change", (event) => {
     const files = event.target.files;
     hideChoosefileMenu();
+    setLoadingState(true);
     loadFiles(files);
+    setLoadingState(false);
 });
 
 function loadFiles(files) {
@@ -523,8 +525,10 @@ async function listTestAudio() {
 async function selectTestAudio(testAudioName) {
     console.log(`Selected test audio: ${testAudioName}`);
     const testAudioFiles = await getTestAudioFiles(testAudioName);
-    loadFiles(testAudioFiles);
     hideChoosefileMenu();
+    setLoadingState(true);
+    loadFiles(testAudioFiles);
+    setLoadingState(false);
 }
 
 async function choosefileMenuAddItems() {
@@ -545,14 +549,14 @@ async function choosefileMenuAddItems() {
 }
 
 function hideChoosefileMenu() {
-    menu = document.getElementById("choosefile_menu");
+    const menu = document.getElementById("choosefile_menu");
     menu.classList.add("hidden");
-    cover = document.getElementById("page_cover");
+    const cover = document.getElementById("page_cover");
     cover.classList.add("hidden");
 }
 
 function showChoosefileMenu(event) {
-    menu = document.getElementById("choosefile_menu");
+    const menu = document.getElementById("choosefile_menu");
     // Get the menu prepared
     choosefileMenuAddItems(menu);
     // Show the menu
@@ -561,7 +565,23 @@ function showChoosefileMenu(event) {
     console.log(`Open menu at: left: "${event.clientX + 10}"; top: "${event.clientY + 10}"`);
     menu.classList.remove("hidden");
     // Show the page cover, and set when to hide it with the menu itself
-    cover = document.getElementById("page_cover");
+    const cover = document.getElementById("page_cover");
     cover.classList.remove("hidden");
     cover.onclick = (function() {hideChoosefileMenu();})
+}
+
+function setLoadingState(state) {
+    console.log(`Setting loading state to ${state}`);
+    const cover = document.getElementById("page_cover");
+    const popup = document.getElementById("loading_popup");
+    if (state) {
+        cover.classList.remove("hidden");
+        cover.onclick = "";
+        popup.classList.remove("hidden");
+    } else if (!state) {
+        cover.classList.add("hidden");
+        popup.classList.add("hidden");
+    } else {
+        console.warn("Invalid state for loading screen!");
+    }
 }

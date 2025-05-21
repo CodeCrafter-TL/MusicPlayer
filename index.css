@@ -357,15 +357,6 @@ p {
 
 /* Things related to file choosing menu */
 
-#choosefile_menu.hidden {
-    opacity: 0;
-    /* scale: .5; */
-    will-change: transform, opacity;
-    transform: scale(.5);
-    transition: transform 0.15s ease-out, opacity 0.15s ease-out;
-    pointer-events: none;
-}
-
 #choosefile_menu {
     display: flex;
     opacity: 1;
@@ -384,6 +375,13 @@ p {
     transition: transform 0.3s cubic-bezier(.54,.02,.25,1.26), opacity 0.3s ease-in;
     transform-origin: 0px 0px;
     z-index: 501;
+}
+
+#choosefile_menu.hidden {
+    opacity: 0;
+    /* scale: .5; */
+    transform: scale(.5);
+    pointer-events: none;
 }
 
 #choosefile_menu .title {
@@ -435,10 +433,6 @@ p {
     color: #ffffff;
     /* width: calc(80% - 10px); */
     /* padding: 0 calc(5% + 5px); */
-    will-change: background-color padding, width;
-    transition: background-color 0.1s linear,
-                left 0.1s ease-out,
-                width 0.1s ease-out;
 }
 
 #choosefile_menu #testaudio_list .item:active {
@@ -447,10 +441,6 @@ p {
     color: #000000;
     /* width: calc(80% - 10px); */
     /* padding: 0 calc(5% + 5px); */
-    will-change: background-color padding, width;
-    transition: background-color 0.1s linear,
-                left 0.1s ease-out,
-                width 0.1s ease-out;
 }
 
 #choosefile_menu #testaudio_list .item.died {
@@ -463,11 +453,6 @@ p {
     width: 90%;
     align-self: center;
     text-align: left;
-    will-change: background-color, padding, width;
-    transition: background-color 0.1s linear,
-                left 0.1s ease-out,
-                width 0.1s ease-out;
-    font-size: 1.3rem;
     /* font-weight: bolder; */
 }
 
@@ -507,11 +492,106 @@ p {
 
 #page_cover.hidden {
     opacity: 0;
-    /* width: 0;
-    height: 0; */
     pointer-events: none;
-    transition: opacity 0.15s linear;
 }
+
+/* Loading popup */
+
+#loading_popup {
+    border-radius: 15px;
+    position: fixed;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    background-color: #00000050;
+    opacity: 1;
+    transition: opacity 0.15s linear;
+    color: #fff;
+    font-size: 3.5rem;
+    text-align: center;
+    z-index: 501;
+    padding: 30px 50px;
+}
+
+#loading_popup.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.loadingbar {
+  position: relative;
+  height: 4px;
+  display: block;
+  width: 100%;
+  background-color: #ffffff50;
+  border-radius: 2px;
+  background-clip: padding-box;
+  margin: 0.5rem 0 1rem 0;
+  overflow: hidden; }
+  .loadingbar.indeterminate {
+    background-color: #ffffff50; }
+    .loadingbar.indeterminate:before {
+      content: '';
+      position: absolute;
+      background-color: #ffffff;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      will-change: left, right;
+      -webkit-animation: indeterminate 2.1s cubic-bezier(0.65, 0.815, 0.735, 0.395) infinite;
+              animation: indeterminate 2.1s cubic-bezier(0.65, 0.815, 0.735, 0.395) infinite; }
+    .loadingbar.indeterminate:after {
+      content: '';
+      position: absolute;
+      background-color: #ffffff;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      will-change: left, right;
+      -webkit-animation: indeterminate-short 2.1s cubic-bezier(0.165, 0.84, 0.44, 1) infinite;
+              animation: indeterminate-short 2.1s cubic-bezier(0.165, 0.84, 0.44, 1) infinite;
+      -webkit-animation-delay: 1.15s;
+              animation-delay: 1.15s; }
+
+@-webkit-keyframes indeterminate {
+  0% {
+    left: -35%;
+    right: 100%; }
+  60% {
+    left: 100%;
+    right: -90%; }
+  100% {
+    left: 100%;
+    right: -90%; } }
+@keyframes indeterminate {
+  0% {
+    left: -35%;
+    right: 100%; }
+  60% {
+    left: 100%;
+    right: -90%; }
+  100% {
+    left: 100%;
+    right: -90%; } }
+@-webkit-keyframes indeterminate-short {
+  0% {
+    left: -200%;
+    right: 100%; }
+  60% {
+    left: 107%;
+    right: -8%; }
+  100% {
+    left: 107%;
+    right: -8%; } }
+@keyframes indeterminate-short {
+  0% {
+    left: -200%;
+    right: 100%; }
+  60% {
+    left: 107%;
+    right: -8%; }
+  100% {
+    left: 107%;
+    right: -8%; } }
 
 /* Other */
 

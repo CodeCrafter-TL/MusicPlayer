@@ -93,11 +93,11 @@ audioPlayer.addEventListener("loadedmetadata", () => {
     }
 });
 
-audioFileInput.addEventListener("change", (event) => {
+audioFileInput.addEventListener("change", (event) => async function() {
     const files = event.target.files;
     hideChoosefileMenu();
     setLoadingState(true);
-    loadFiles(files);
+    await loadFiles(files);
     setLoadingState(false);
 });
 
@@ -524,10 +524,10 @@ async function listTestAudio() {
 
 async function selectTestAudio(testAudioName) {
     console.log(`Selected test audio: ${testAudioName}`);
-    const testAudioFiles = await getTestAudioFiles(testAudioName);
     hideChoosefileMenu();
     setLoadingState(true);
-    loadFiles(testAudioFiles);
+    const testAudioFiles = await getTestAudioFiles(testAudioName);
+    await loadFiles(testAudioFiles);
     setLoadingState(false);
 }
 

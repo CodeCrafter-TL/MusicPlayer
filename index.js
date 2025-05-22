@@ -575,9 +575,12 @@ function showChoosefileMenu(event) {
     cover.onclick = (function() {hideChoosefileMenu();})
 }
 
+// Loading dialog
+
 var loadingChangeTipTimeout = null;
 
 function setLoadingState(state) {
+    const NEVER_CLOSE_LOADING_DLG = false;
     console.log(`Setting loading state to ${state}`);
     const cover = document.getElementById("page_cover");
     const popup = document.getElementById("loading_popup");
@@ -586,7 +589,7 @@ function setLoadingState(state) {
         cover.classList.remove("hidden");
         cover.onclick = "";
         popup.classList.remove("hidden");
-        // Set loading tip
+        // Set loading tip (with delayed text changes)
         tipText.textContent = "Have a cup of coffee?";
         tipText.classList.remove("clickable");
         loadingChangeTipTimeout = setTimeout(function () {
@@ -609,6 +612,9 @@ function setLoadingState(state) {
             }, 10000);
         }, 5000);
     } else if (!state) {
+        if (NEVER_CLOSE_LOADING_DLG) {
+            return;
+        }
         cover.classList.add("hidden");
         popup.classList.add("hidden");
         if (loadingChangeTipTimeout != null) {

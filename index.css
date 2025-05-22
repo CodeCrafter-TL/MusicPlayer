@@ -515,6 +515,8 @@ p {
     color: #fff;
     font-size: 3.5rem;
     text-align: center;
+    font-weight: bold;
+    letter-spacing: 0.2rem;
     align-content: center;
     z-index: 501;
     padding: 30px 50px;
@@ -533,12 +535,15 @@ p {
     display: block;
     margin-left: auto;
     margin-right: auto;
+    font-weight: normal;
+    letter-spacing: 0.05rem;
 }
 
 #loading_popup #loading_tip.clickable {
     background-color: #ffffff33;
     color: #fff;
     border-radius: 3px;
+    padding: 0 6px;
     will-change: background-color, color;
     transition: background-color 0.1s linear,
                 color 0.1s linear;

@@ -522,12 +522,15 @@ async function listTestAudio() {
     }
 }
 
-async function selectTestAudio(testAudioName) {
+async function selectTestAudio(testAudioName, testAudioDispName = "Unknown test audio") {
     console.log(`Selected test audio: ${testAudioName}`);
     hideChoosefileMenu();
     setLoadingState(true);
     const testAudioFiles = await getTestAudioFiles(testAudioName);
     await loadFiles(testAudioFiles);
+    // Set track name text
+    const name_disp = document.getElementsByClassName("name")[0];
+    name_disp.textContent = testAudioDispName;
     setLoadingState(false);
 }
 
@@ -544,7 +547,7 @@ async function choosefileMenuAddItems() {
     }
     for (const [trackName, dirName] of Object.entries(items)) {
         console.log(`Add item: ${trackName} - ${dirName}`);
-        list.innerHTML += "\n" + `<p class="item" onclick="selectTestAudio('${dirName}');">${trackName}</p>`;
+        list.innerHTML += "\n" + `<p class="item" onclick="selectTestAudio('${dirName}', '${trackName}');">${trackName}</p>`;
     }
 }
 
@@ -570,17 +573,45 @@ function showChoosefileMenu(event) {
     cover.onclick = (function() {hideChoosefileMenu();})
 }
 
+var loadingChangeTipTimeout = null;
+
 function setLoadingState(state) {
     console.log(`Setting loading state to ${state}`);
     const cover = document.getElementById("page_cover");
     const popup = document.getElementById("loading_popup");
+    const tipText = document.getElementById("loading_tip");
     if (state) {
         cover.classList.remove("hidden");
         cover.onclick = "";
         popup.classList.remove("hidden");
+        // Set loading tip
+        tipText.textContent = "Have a cup of coffee?";
+        tipText.classList.remove("clickable");
+        loadingChangeTipTimeout = setTimeout(function () {
+            tipText.textContent = "Actually working on it...";
+            loadingChangeTipTimeout = setTimeout(function () {
+                tipText.textContent = "Consider checking your network connection?";
+                loadingChangeTipTimeout = setTimeout(function () {
+                    tipText.textContent = "Waited too looooog? Click here to hide loading page";
+                    tipText.onclick = function(){
+                        setLoadingState(false);
+                        alert("Please note that the loading process is still running in background!\n" + 
+                              "To end it, consider refreshing the entire page.\n\n" + 
+                              "Downloading files may be a long progress. However, if you kept waiting " + 
+                              "this long for several times, consider checking your network connection " + 
+                              "or our server condition.\n" + 
+                              "If you sure this is a program issue, please report it to us on GitHub.");
+                    };
+                    tipText.classList.add("clickable");
+                }, 20000);
+            }, 10000);
+        }, 5000);
     } else if (!state) {
         cover.classList.add("hidden");
         popup.classList.add("hidden");
+        if (loadingChangeTipTimeout != null) {
+            clearTimeout(loadingChangeTipTimeout);
+        }
     } else {
         console.warn("Invalid state for loading screen!");
     }

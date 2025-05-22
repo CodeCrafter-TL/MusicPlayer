@@ -600,8 +600,8 @@ function setLoadingState(state) {
                               "If you sure this is a program issue, please report it to us on GitHub.");
                     };
                     tipText.classList.add("clickable");
-                }, 2000);
-            }, 1000);
+                }, 20000);
+            }, 10000);
         }, 5000);
     } else if (!state) {
         cover.classList.add("hidden");

@@ -584,6 +584,9 @@ function setLoadingState(state) {
         cover.classList.remove("hidden");
         cover.onclick = "";
         popup.classList.remove("hidden");
+        // Set loading tip
+        tipText.textContent = "Have a cup of coffee?";
+        tipText.classList.remove("clickable");
         loadingChangeTipTimeout = setTimeout(function () {
             tipText.textContent = "Actually working on it...";
             loadingChangeTipTimeout = setTimeout(function () {
@@ -609,9 +612,6 @@ function setLoadingState(state) {
         if (loadingChangeTipTimeout != null) {
             clearTimeout(loadingChangeTipTimeout);
         }
-        // Reset loading tip
-        tipText.textContent = "Have a cup of coffee?";
-        tipText.classList.remove("clickable");
     } else {
         console.warn("Invalid state for loading screen!");
     }

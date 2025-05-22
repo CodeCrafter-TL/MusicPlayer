@@ -595,7 +595,7 @@ function setLoadingState(state) {
         loadingChangeTipTimeout = setTimeout(function () {
             tipText.textContent = "真的有在加载哦……";
             loadingChangeTipTimeout = setTimeout(function () {
-                tipText.textContent = "bro似乎是高ping战士";
+                tipText.textContent = "bro似乎是高ping战士 — 检查一下网络？";
                 loadingChangeTipTimeout = setTimeout(function () {
                     tipText.textContent = "加载长到出奇？点我隐藏加载界面！";
                     tipText.onclick = function(){

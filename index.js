@@ -585,26 +585,26 @@ function setLoadingState(state) {
         cover.onclick = "";
         popup.classList.remove("hidden");
         // Set loading tip
-        tipText.textContent = "Have a cup of coffee?";
+        tipText.textContent = "心急吃不了臭豆腐";
         tipText.classList.remove("clickable");
         loadingChangeTipTimeout = setTimeout(function () {
-            tipText.textContent = "Actually working on it...";
+            tipText.textContent = "真的有在加载哦……";
             loadingChangeTipTimeout = setTimeout(function () {
-                tipText.textContent = "Consider checking your network connection?";
+                tipText.textContent = "bro似乎是高ping战士";
                 loadingChangeTipTimeout = setTimeout(function () {
-                    tipText.textContent = "Waited too looooog? Click here to hide loading page";
+                    tipText.textContent = "加载长到出奇？点我隐藏加载界面！";
                     tipText.onclick = function(){
                         setLoadingState(false);
-                        alert("Please note that the loading process is still running in background!\n" + 
-                              "To end it, consider refreshing the entire page.\n\n" + 
-                              "Downloading files may be a long progress. However, if you kept waiting " + 
-                              "this long for several times, consider checking your network connection " + 
-                              "or our server condition.\n" + 
-                              "If you sure this is a program issue, please report it to us on GitHub.");
+                        alert("请注意：加载任务仍在后台运作！" + 
+                              "若要结束它，请刷新整个页面。\n\n" + 
+                              "加载文件可能需要一些时间。然而，如果您已经数次经历这样的等待，请尝试检查您的" + 
+                              "网络环境和我们的服务器状态。\n" + 
+                              "如果您十分确定这是一个程序bug，请在GitHub上向我们反馈\n\n" + 
+                              "简中特供说明：正在加载的文件可能来自GitHub或其他境外服务器，若无法加载，请自备良好的网络环境。");
                     };
                     tipText.classList.add("clickable");
-                }, 20000);
-            }, 10000);
+                }, 2000);
+            }, 1000);
         }, 5000);
     } else if (!state) {
         cover.classList.add("hidden");

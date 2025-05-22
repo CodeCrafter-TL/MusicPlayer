@@ -47,6 +47,9 @@
 
 body {
     height: 100vh;
+    width: 100vw;
+    min-width: 100vw;
+    box-sizing: border-box;
     overflow: hidden;
     display: flex;
     flex-direction: row;
@@ -55,23 +58,23 @@ body {
     /* -webkit-backdrop-filter: blur(20px);
     backdrop-filter: blur(20px); */
     z-index: 2;
-    margin: 0;
+    margin: 0 0;
     background: var(--background, #555555);
 }
 
 .main {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: auto;
-    height: auto;
+    width: 80%;
+    /* position: relative; */
+    /* left: calc((100vw - 80%) / 2); */
+    height: 100vh;
     display: inline-flex;
     flex-direction: row;
     align-items: center;
-    justify-content: center;
+    justify-content: left;
+    /* align-self: center; */
     transition: scale 0.3s ease;
-    margin-right: 20%;
-    margin-left: -5%;
+    /* margin-right: 20%;
+    margin-left: -5%; */
 }
 
 .leftcontent {
@@ -79,7 +82,8 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    /* padding-left: 20%; */
+    align-self: left;
+    /* margin-left: 24px; */
 }
 
 .svgcontainer {
@@ -174,11 +178,13 @@ p {
 
 .rightcontent {
     padding-left: 10%;
-    margin-right: 10%;
+    /* margin-right: 10%; */
+    flex: 1;
+    /* width: 50vw; */
 }
 
 .lyricscontainer {
-    width: 160%;
+    width: 100%;
     height: 100vh;
     position: relative;
     z-index: 2;

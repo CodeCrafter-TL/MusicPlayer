@@ -22,24 +22,24 @@ let called = false;
 
 var mouse_pos = {"x": 0, "y": 0};
 
-function mainDivScalePosition(width, height) {
-    // width: 1280, height: 720 (Image loaded)
-    // width: 325, height: 437 (Image unloaded)
-    const scaleX = mainDiv.clientWidth / width;
-    const scaleY = mainDiv.clientHeight / height;
-    const scale = Math.max(scaleX, scaleY);
+// function mainDivScalePosition(width, height) {
+//     // width: 1280, height: 720 (Image loaded)
+//     // width: 325, height: 437 (Image unloaded)
+//     const scaleX = width / mainDiv.clientWidth;
+//     const scaleY = height / mainDiv.clientHeight;
+//     const scale = Math.max(scaleX, scaleY);
 
-    mainDiv.style.transform = `scale(${scale})`;
-    mainDiv.style.top = `calc(50% - ${mainDiv.clientHeight / 2}px)`;
-    mainDiv.style.left = `calc(50% - ${mainDiv.clientWidth / 2}px)`;
+//     mainDiv.style.transform = `scale(${scale})`;
+//     // mainDiv.style.top = `calc(50% - ${mainDiv.clientHeight / 2}px)`;
+//     // mainDiv.style.left = `calc(80% - ${mainDiv.clientWidth / 2}px)`;
 
-    rightContent.style.paddingLeft = `${10 / scaleX}%`;
-}
+//     // rightContent.style.paddingLeft = `${10 / scaleX}%`;
+// }
 
-window.addEventListener("resize", () => {
-    mainDivScalePosition(width, height);
-});
-mainDivScalePosition(width, height);
+// window.addEventListener("resize", () => {
+//     mainDivScalePosition(width, height);
+// });
+// mainDivScalePosition(width, height);
 
 let bgImg = new Image();
 // bgImg.src = "./default.svg";
@@ -93,7 +93,7 @@ audioPlayer.addEventListener("loadedmetadata", () => {
     }
 });
 
-audioFileInput.addEventListener("change", (event) => async function() {
+audioFileInput.addEventListener("change", async (event) => {
     hideChoosefileMenu();
     setLoadingState(true);
     const files = event.target.files;
@@ -160,12 +160,12 @@ function loadFiles(files) {
 
 function disableLyric() {
     rightContent.style.display = "none";
-    leftContent.style.paddingLeft = "none";
+    // leftContent.style.paddingLeft = "none";
 }
 
 function enableLyric() {
     rightContent.style.display = "";
-    leftContent.style.paddingLeft = "";
+    // leftContent.style.paddingLeft = "";
 }
 
 function fetchLrcFile(filename) {
@@ -272,7 +272,7 @@ function parseLrc(lrcText) {
         }
     });
 
-    mainDivScalePosition(width, height);
+    // mainDivScalePosition(width, height);
 
     return {
         lyrics: lrcArray,
@@ -283,7 +283,9 @@ function parseLrc(lrcText) {
 function updateLyrics() {
     if (!playing) return;
 
-    const currentTime = audioPlayer.currentTime;
+    const currentTime = audioPlayer.currentTime + (0.75 / 2);
+    // To make lyrics get 0.75/2 seconds (half of the duration of animations) 
+    // advanced than audio, in order to avoid delay due to animation.
     const lyricLines = lyricsElement.querySelectorAll('*');
     if (called) {
         lyricsElement.style.transition = "all 1s cubic-bezier(0.25, 0.8, 0.25, 1)";

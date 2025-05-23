@@ -35,12 +35,23 @@ function scaleElements(width, height) {
     // svgcontainer.style.transform = `scale(${scale})`;
 
     mainDiv.style.transform = `scale(${scale})`;
-    // if ("hidden" in menu.classList) { // If the menu is hidden, it should be scaled to 0.5x than normal size
-    //     menu.style.transform = `scale(${scale * .5})`;
-    // } else {
-    //     menu.style.transform = `scale(${scale})`;
-    // }
     loading_popup.style.transform = `scale(${scale})`;
+    // To set the size of the menu
+    for (const sheet of document.styleSheets) {
+        try {
+            const rules = sheet.cssRules || sheet.rules;
+            for (const rule of rules) {
+                if (rule.selectorText === "#choosefile_menu") {
+                    rule.style.transform = `scale(${scale})`;
+                } else if (rule.selectorText === "#choosefile_menu.hidden") {
+                    rule.style.transform = `scale(${scale * 0.5})`;
+                }
+            }
+        } catch (e) {
+            // console.warn('Failed to access stylesheet: ', sheet.href);
+            null;
+        }
+    }
     // console.log(width, window.innerWidth, height, window.innerHeight);
     console.log(`Scale elements to ${scale * 100}%`);
     // mainDiv.style.top = `calc(50% - ${mainDiv.clientHeight / 2}px)`;

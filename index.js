@@ -15,31 +15,55 @@ const lyricsContainer = document.querySelector(".lyricscontainer");
 const rightContent = document.querySelector(".rightcontent");
 const mainDiv = document.querySelector(".main");
 const processedLines = new Set();
+const menu = document.getElementById("choosefile_menu");
+const cover = document.getElementById("page_cover");
+const loading_popup = document.getElementById("loading_popup");
 let needProcess = undefined;
-let width = 1280;
-let height = 720;
+let width = 1920;
+let height = 1080;
 let called = false;
 
 var mouse_pos = {"x": 0, "y": 0};
 
-// function mainDivScalePosition(width, height) {
-//     // width: 1280, height: 720 (Image loaded)
-//     // width: 325, height: 437 (Image unloaded)
-//     const scaleX = width / mainDiv.clientWidth;
-//     const scaleY = height / mainDiv.clientHeight;
-//     const scale = Math.max(scaleX, scaleY);
+function scaleElements(width, height) {
+    // width: 1280, height: 720 (Image loaded)
+    // width: 325, height: 437 (Image unloaded)
+    const scaleX = window.innerWidth / width;
+    const scaleY = window.innerHeight / height;
+    const scale = Math.min(scaleX, scaleY);
 
-//     mainDiv.style.transform = `scale(${scale})`;
-//     // mainDiv.style.top = `calc(50% - ${mainDiv.clientHeight / 2}px)`;
-//     // mainDiv.style.left = `calc(80% - ${mainDiv.clientWidth / 2}px)`;
+    // svgcontainer.style.transform = `scale(${scale})`;
 
-//     // rightContent.style.paddingLeft = `${10 / scaleX}%`;
-// }
+    mainDiv.style.transform = `scale(${scale})`;
+    loading_popup.style.transform = `scale(${scale})`;
+    // To set the size of the menu
+    for (const sheet of document.styleSheets) {
+        try {
+            const rules = sheet.cssRules || sheet.rules;
+            for (const rule of rules) {
+                if (rule.selectorText === "#choosefile_menu") {
+                    rule.style.transform = `scale(${scale})`;
+                } else if (rule.selectorText === "#choosefile_menu.hidden") {
+                    rule.style.transform = `scale(${scale * 0.5})`;
+                }
+            }
+        } catch (e) {
+            // console.warn('Failed to access stylesheet: ', sheet.href);
+            null;
+        }
+    }
+    // console.log(width, window.innerWidth, height, window.innerHeight);
+    console.log(`Scale elements to ${scale * 100}%`);
+    // mainDiv.style.top = `calc(50% - ${mainDiv.clientHeight / 2}px)`;
+    // mainDiv.style.left = `calc(80% - ${mainDiv.clientWidth / 2}px)`;
 
-// window.addEventListener("resize", () => {
-//     mainDivScalePosition(width, height);
-// });
-// mainDivScalePosition(width, height);
+    // rightContent.style.paddingLeft = `${10 / scaleX}%`;
+}
+
+window.addEventListener("resize", () => {
+    scaleElements(width, height);
+});
+scaleElements(width, height);
 
 let bgImg = new Image();
 // bgImg.src = "./default.svg";
@@ -561,7 +585,6 @@ function hideChoosefileMenu() {
 }
 
 function showChoosefileMenu(event) {
-    const menu = document.getElementById("choosefile_menu");
     // Get the menu prepared
     choosefileMenuAddItems(menu);
     // Show the menu
@@ -582,13 +605,11 @@ var loadingChangeTipTimeout = null;
 function setLoadingState(state) {
     const NEVER_CLOSE_LOADING_DLG = false;
     console.log(`Setting loading state to ${state}`);
-    const cover = document.getElementById("page_cover");
-    const popup = document.getElementById("loading_popup");
     const tipText = document.getElementById("loading_tip");
     if (state) {
         cover.classList.remove("hidden");
         cover.onclick = "";
-        popup.classList.remove("hidden");
+        loading_popup.classList.remove("hidden");
         // Set loading tip (with delayed text changes)
         tipText.textContent = "心急吃不了臭豆腐";
         tipText.classList.remove("clickable");
@@ -616,7 +637,7 @@ function setLoadingState(state) {
             return;
         }
         cover.classList.add("hidden");
-        popup.classList.add("hidden");
+        loading_popup.classList.add("hidden");
         if (loadingChangeTipTimeout != null) {
             clearTimeout(loadingChangeTipTimeout);
         }

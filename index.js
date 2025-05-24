@@ -548,7 +548,7 @@ async function listTestAudio() {
     }
 }
 
-async function selectTestAudio(testAudioName, testAudioDispName = "Unknown test audio") {
+async function selectTestAudio(testAudioName, testAudioDispName = "未知测试曲目") {
     console.log(`Selected test audio: ${testAudioName}`);
     hideChoosefileMenu();
     setLoadingState(true);
@@ -563,12 +563,12 @@ async function selectTestAudio(testAudioName, testAudioDispName = "Unknown test 
 async function choosefileMenuAddItems() {
     list = document.getElementById("testaudio_list");
     // console.log("Add items")
-    list.innerHTML = `<p class="item died">Loading</p>`;
+    list.innerHTML = `<p class="item died">正在载入……</p>`;
     items = await listTestAudio();
     // list.innerHTML = `<p class="item died">Pick an example</p>`;
     list.innerHTML = "";
     if (Object.keys(items).length == 0) {
-        list.innerHTML += `<p class="item died" style="font-size: 1.1rem;">(Empty or failed to fetch)</p>`;
+        list.innerHTML += `<p class="item died" style="font-size: 1.1rem;">[没有测试曲目或加载失败]</p>`;
         return false;
     }
     for (const [trackName, dirName] of Object.entries(items)) {

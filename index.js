@@ -629,8 +629,8 @@ function setLoadingState(state) {
                               "简中特供说明：正在加载的文件可能来自GitHub或其他境外服务器，若无法加载，请自备良好的网络环境。");
                     };
                     tipText.classList.add("clickable");
-                }, 2000);
-            }, 1000);
+                }, 20000);
+            }, 10000);
         }, 5000);
     } else if (!state) {
         if (NEVER_CLOSE_LOADING_DLG) {

@@ -19,8 +19,8 @@ const menu = document.getElementById("choosefile_menu");
 const cover = document.getElementById("page_cover");
 const loading_popup = document.getElementById("loading_popup");
 let needProcess = undefined;
-let width = 1920;
-let height = 1080;
+let width = 1600;
+let height = 900;
 let called = false;
 
 var mouse_pos = {"x": 0, "y": 0};
@@ -35,7 +35,7 @@ function scaleElements(width, height) {
     // svgcontainer.style.transform = `scale(${scale})`;
 
     mainDiv.style.transform = `scale(${scale})`;
-    loading_popup.style.transform = `scale(${scale})`;
+    // loading_popup.style.transform = `scale(${scale})`;
     // To set the size of the menu
     for (const sheet of document.styleSheets) {
         try {

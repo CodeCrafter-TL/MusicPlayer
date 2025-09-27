@@ -20,6 +20,12 @@ let width = 1280;
 let height = 720;
 let called = false;
 
+// 常量
+const LINE_HEIGHT = 20;
+const LYRICS_OFFSET = window.innerHeight /3;
+
+let lastLyric = -1
+/*
 function mainDivScalePosition(width, height) {
     // width: 1280, height: 720 (Image loaded)
     // width: 325, height: 437 (Image unloaded)
@@ -38,7 +44,7 @@ window.addEventListener("resize", () => {
     mainDivScalePosition(width, height);
 });
 mainDivScalePosition(width, height);
-
+*/
 let bgImg = new Image();
 // bgImg.src = "./default.svg";
 let playing = false;
@@ -81,8 +87,8 @@ audioPlayer.addEventListener("loadedmetadata", () => {
         if (!lrcLoaded) {
             width = 325;
             height = 437;
-            window.dispatchEvent(new Event("resize"));
-            mainDiv.style.marginLeft = "0";
+           // window.dispatchEvent(new Event("resize"));
+           // mainDiv.style.marginLeft = "0";
         }
         playBtn.click();
     } else {
@@ -139,7 +145,15 @@ audioFileInput.addEventListener("change", (event) => {
                 lyrics = parsedData.lyrics;
                 allTimes = parsedData.allTimes;
                 lyricsElement = document.querySelector(".lyrics");
-                lyricsElement.innerHTML = lyrics.map(line => `<p data-text="${line.text}">${line.text}</p>`).join('');
+                lyricsElement.innerHTML = "";
+                //lyricsElement.innerHTML = lyrics.map(line => `<p data-text="${line.text}">${line.text}</p>`).join('');
+                for (let i = 0; i < lyrics.length; i++) {
+                    lyricsElement.appendChild(lyrics[i].ele)
+                }
+                UpdateLyricsLayout(0,lyrics,0)
+                for (let i = 0; i < lyrics.length; i++) {
+                    lyrics[i].ele.style.transition = "transform 0.7s cubic-bezier(.19,.11,0,1),color 0.5s ease-in-out";
+                }
             };
             reader.readAsArrayBuffer(file);
             lrcLoaded = true;
@@ -179,6 +193,24 @@ audioPlayer.addEventListener("timeupdate", () => {
         process.style.width = `${(audioPlayer.currentTime / audioPlayer.duration) * 100}%`;
         startTime.textContent = formatTime(audioPlayer.currentTime);
         endTime.textContent = `-${formatTime(audioPlayer.duration - audioPlayer.currentTime)}`;
+        // 歌词触发计算
+        const cTime = audioPlayer.currentTime;
+        
+        let lList = [];
+        for (let i = 0; i < lyrics.length; i++) {
+            if (cTime >= lyrics[i].time) {
+                lList.push(lyrics[i]);
+            }
+        }
+        if (lList.length === 0) return;
+        if (lastLyric !== lList.length - 1) {
+           
+            UpdateLyricsLayout(lList.length - 1,lyrics,1);
+            console.log(lList[lList.length - 1].text);
+            
+            lastLyric = lList.length - 1
+        }
+
     }
 });
 
@@ -255,20 +287,25 @@ function parseLrc(lrcText) {
 
             allTimes.push(timeInSeconds);
 
+            const div = document.createElement('div');
+            div.className = 'item';
+            const p = document.createElement('p');
+            p.textContent = text;
+            div.appendChild(p);
             if (text) {
-                lrcArray.push({ time: timeInSeconds, text });
+                lrcArray.push({ time: timeInSeconds, text, ele: div });
             }
         }
     });
 
-    mainDivScalePosition(width, height);
+    //mainDivScalePosition(width, height);
 
     return {
         lyrics: lrcArray,
         allTimes: allTimes
     };
 }
-
+/*
 function updateLyrics() {
     if (!playing) return;
 
@@ -366,11 +403,11 @@ function centerActiveLine(activeLine) {
 
     lyricsElement.style.transform = `translateY(${offset}px)`;
 }
-
+*/
 audioPlayer.addEventListener('play', () => {
-    requestAnimationFrame(updateLyrics);
+    //requestAnimationFrame(updateLyrics);
 });
-
+/*
 window.addEventListener('resize', () => {
     lyricsElement.classList.add("noTransition");
     updateLyrics();
@@ -378,7 +415,7 @@ window.addEventListener('resize', () => {
 });
 
 updateLyrics();
-
+*/
 function getDominantColors(imageData, colorCount = 5, minColorDistance = 100) {
     const pixels = imageData.data;
     const sampledColors = []; // 存储采样后的颜色（未去重）
@@ -437,4 +474,49 @@ bgImg.onload = () => {
     document.body.style.setProperty('--color3-rgba', colors[2].replace("0.9", "0"));
     document.body.style.setProperty('--color4-rgba', colors[3].replace("0.9", "0"));
     document.body.style.setProperty('--color5-rgba', colors[4].replace("0.9", "0"));
+}
+
+
+
+// 新增的函数
+
+// 动态计算布局的函数
+function GetLyricsLayout(now, to, data) {
+    let res = 0;
+    // 判断滚动方向
+    if (to > now) { // 向下滚动
+        for (let i = now; i < to; i++) {
+            res += data[i].ele.offsetHeight + LINE_HEIGHT;
+        }
+    } else { // 向上滚动
+        for (let i = now; i > to; i--) {
+            res -= data[i - 1].ele.offsetHeight + LINE_HEIGHT;
+        }
+    }
+
+    // 使用偏移值作为初始位置，确保歌词居中或位于正确位置
+    return res + LYRICS_OFFSET;
+}
+
+function UpdateLyricsLayout(index, data,init = 1) {
+    
+    for (let i = 0; i < data.length; i++) {
+
+        if (i === index && init) {
+            data[i].ele.style.color = "rgba(255,255,255,1)"
+            
+        }else{
+            data[i].ele.style.color = "rgba(255,255,255,0.2)"
+        }
+        data[i].ele.style.filter = `blur(${Math.abs(i - index)}px)`
+        const position = GetLyricsLayout(index, i, data);
+        
+        let n = (i- index)+1
+        if (n>10){
+            n=0
+        }
+        setTimeout(() => {
+            data[i].ele.style.transform = `translateY(${position}px)`;
+        },  (n * 70 - n * 10) * init);
+    }
 }

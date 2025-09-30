@@ -1,28 +1,38 @@
 @font-face {
-    src: url(fonts/PingFangSC-Regular.woff2);
-    font-family: "PingFangSC-Regular";
+    src: url(./fonts/PingFangTC-Regular.woff2);
+    font-family: "PingFang TC";
 }
 
 @font-face {
-    src: url(fonts/sf-pro-display_regular.woff2);
-    font-family: "SFPro-Regular";
+    src: url(./fonts/PingFangSC-Regular.woff2);
+    font-family: "PingFang SC";
 }
 
 @font-face {
-    src: url(fonts/PingFangSC-Semibold.woff2);
-    font-family: "PingFangSC-Semibold";
+    src: url(./fonts/SFProJP_regular.woff2);
+    font-family: "SFProJP";
 }
 
 @font-face {
-    src: url(fonts/sf-pro-display_semibold.woff2);
-    font-family: "SFPro-Semibold";
+    src: url(./fonts/HelveticaNeueCyr-Roman.woff2);
+    font-family: "Helvetica Neue";
+}
+
+@font-face {
+    src: url(./fonts/Arial-Unicode.woff2);
+    font-family: "Arial-Unicode";
+}
+
+@font-face {
+    src: url(./fonts/sf-pro-display_regular.woff2);
+    font-family: "SFPro";
 }
 
 * {
-    font-family: "SFPro-Regular", "PingFangSC-Regular";
+    font-family: "SFPro", "PingFang SC", "PingFang TC", "SFProJP", "Helvetica Neue", "Arial-Unicode";
     -webkit-user-select: none;
     user-select: none;
-    --color1: rgba(232, 232, 232, 0.9);
+    /* --color1: rgba(232, 232, 232, 0.9);
     --color2: rgba(197, 197, 199, 0.9);
     --color3: rgba(255, 255, 255, 0.9);
     --color4: rgba(150, 150, 150, 0.9);
@@ -31,12 +41,15 @@
     --color2-rgba: rgba(197, 197, 199, 0);
     --color3-rgba: rgba(255, 255, 255, 0);
     --color4-rgba: rgba(150, 150, 150, 0);
-    --color5-rgba: rgba(210, 210, 210, 0);
+    --color5-rgba: rgba(210, 210, 210, 0); */
     --type-time: 0;
 }
 
 body {
     height: 100vh;
+    width: 100vw;
+    min-width: 100vw;
+    box-sizing: border-box;
     overflow: hidden;
     display: flex;
     flex-direction: row;
@@ -45,8 +58,8 @@ body {
     /* -webkit-backdrop-filter: blur(20px);
     backdrop-filter: blur(20px); */
     z-index: 2;
-    margin: 0;
-    background: #e8e8e8;
+    margin: 0 0;
+    background: var(--background, #555555);
 }
 
 .main {
@@ -206,13 +219,14 @@ p {
       
         font-weight 0.75s cubic-bezier(0.25, 0.8, 0.25, 1),
         margin-left 0.75s cubic-bezier(0.25, 0.8, 0.25, 1),
-        margin-top 0.6s cubic-bezier(.01,1.22,.97,1.12),
+        margin-top 0.6s cubic-bezier(.01,1.22,.97,1),
         margin-bottom 1s cubic-bezier(0.25, 0.8, 0.25, 1),
         transform 0.75s cubic-bezier(0.25, 0.8, 0.25, 1);
-    width: 100%;
-    font-weight: normal;
+    max-width: 80%;
+    text-align: left;
+    font-weight: bold;
     font-size: inherit;
-    margin-top: 4%;
+    margin-top: 0.4rlh;
     font-size: 36px;
     text-shadow: -1px 1px 20px #0009, 0 1px 5px #0009;
     align-self: flex-start;
@@ -231,14 +245,13 @@ p {
     margin: 5% 0;
     font-weight: bold;
     filter: none;
-    margin-top: 4%;
-    opacity: 0.9;
+    margin-top: 0.4rlh;
+    opacity: 1;
     transform: matrix(1.2, 0, 0, 1.2, 0, 0);
     background-size: 100% 100%, 100% 100%;
     transform-origin: 0px 50%;
     word-wrap: break-word;
     white-space: normal;
-    font-family: "SFPro-Semibold", "PingFangSC-Semibold";
 }
 */
 /* .lyrics p::after {
@@ -354,6 +367,277 @@ p {
             40vmax 60vmax;
     }
 }
+
+/* Things related to file choosing menu */
+
+#choosefile_menu {
+    display: flex;
+    opacity: 1;
+    backdrop-filter: blur(36px);
+    -webkit-backdrop-filter: blur(36px);
+    background-color: #00000040;
+    border-radius: 10px;
+    max-width: 80%;
+    max-height: 300px;
+    min-width: 450px;
+    min-height: 200px;
+    position: fixed;
+    /* scale: 1; */
+    will-change: transform, opacity;
+    transform: scale(1);
+    transition: transform 0.3s cubic-bezier(.54,.02,.25,1.26), opacity 0.3s ease-in;
+    transform-origin: 0px 0px;
+    z-index: 501;
+}
+
+#choosefile_menu.hidden {
+    opacity: 0;
+    /* scale: .5; */
+    transform: scale(.5);
+    pointer-events: none;
+}
+
+#choosefile_menu .title {
+    position: relative;
+    margin: 10px 15px;
+    top: 0;
+    left: 0;
+    background-color: #ffffff00;
+    color: #ffffffaa;
+    /* width: 50%; */
+    align-self: center;
+    text-align: left;
+    will-change: background-color padding, width;
+    transition: background-color 0.1s linear,
+                left 0.1s ease-out,
+                width 0.1s ease-out;
+    font-size: 1.3rem;
+    /* font-weight: bold; */
+}
+
+#choosefile_menu #testaudio_list {
+    background-color: #00000000;
+    width: 100%;
+    height: 90%;
+    align-self: flex-start;
+    margin: 5px 5px;
+}
+
+#choosefile_menu #testaudio_list .item {
+    position: relative;
+    top: 0;
+    left: 0;
+    background-color: #ffffff00;
+    padding: 0 5%;
+    color: #ffffff;
+    width: 90%;
+    align-self: center;
+    text-align: left;
+    will-change: background-color padding, width;
+    transition: background-color 0.1s linear,
+                left 0.1s ease-out,
+                width 0.1s ease-out;
+    font-size: 1.3rem;
+}
+
+#choosefile_menu #testaudio_list .item:hover {
+    left: 5px;
+    background-color: #ffffff50;
+    color: #ffffff;
+    /* width: calc(80% - 10px); */
+    /* padding: 0 calc(5% + 5px); */
+}
+
+#choosefile_menu #testaudio_list .item:active {
+    left: 5px;
+    background-color: #ffffffff;
+    color: #000000;
+    /* width: calc(80% - 10px); */
+    /* padding: 0 calc(5% + 5px); */
+}
+
+#choosefile_menu #testaudio_list .item.died {
+    position: relative;
+    top: 0;
+    left: 0;
+    background-color: #ffffff00;
+    padding: 0 5%;
+    color: #ffffffaa;
+    width: 90%;
+    align-self: center;
+    text-align: left;
+    /* font-weight: bolder; */
+}
+
+#choosefile_menu #upload_btn {
+    width: 85%;
+    height: 95%;
+    background-color: #00000022;
+    color: #ffffff;
+    border-radius: 10px;
+    /* align-self: center; */
+    align-items: center;
+    text-align: center;
+    position: relative;
+    top: calc((100% - 95%) / 2);
+    left: calc((100% - 85%) / 2);
+    will-change: background-color, color;
+    transition: background-color 0.1s linear,
+                color 0.1s linear;
+}
+
+#choosefile_menu #upload_btn:hover {
+    background: #ffffffaa;
+    color: #000
+}
+
+#page_cover {
+    opacity: 0.5;
+    background-color: #000;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 500;
+    transition: opacity 0.15s linear;
+}
+
+#page_cover.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Loading popup */
+
+#loading_popup {
+    /* border-radius: 15px; */
+    width: 100%;
+    position: fixed;
+    backdrop-filter: blur(36px);
+    -webkit-backdrop-filter: blur(36px);
+    background-color: #00000050;
+    opacity: 1;
+    transition: opacity 0.15s linear;
+    color: #fff;
+    font-size: 3.5rem;
+    text-align: center;
+    font-weight: bold;
+    letter-spacing: 0.2rem;
+    align-content: center;
+    z-index: 501;
+    padding: 30px 50px;
+}
+
+#loading_popup.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+#loading_popup #loading_tip {
+    font-size: 1rem;
+    color: #ffffffaa;
+    width: fit-content;
+    padding: 2px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    font-weight: normal;
+    letter-spacing: 0.05rem;
+}
+
+#loading_popup #loading_tip.clickable {
+    background-color: #ffffff33;
+    color: #fff;
+    border-radius: 3px;
+    padding: 0 6px;
+    will-change: background-color, color;
+    transition: background-color 0.1s linear,
+                color 0.1s linear;
+}
+
+#loading_popup #loading_tip.clickable:hover {
+    background-color: #ffffffaa;
+    color: #000;
+}
+
+.loadingbar {
+  position: relative;
+  height: 4px;
+  display: block;
+  width: 100%;
+  background-color: #ffffff50;
+  border-radius: 2px;
+  background-clip: padding-box;
+  margin: 0.5rem 0 1rem 0;
+  overflow: hidden; }
+  .loadingbar.indeterminate {
+    background-color: #ffffff50; }
+    .loadingbar.indeterminate:before {
+      content: '';
+      position: absolute;
+      background-color: #ffffff;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      will-change: left, right;
+      -webkit-animation: indeterminate 2.1s cubic-bezier(0.65, 0.815, 0.735, 0.395) infinite;
+              animation: indeterminate 2.1s cubic-bezier(0.65, 0.815, 0.735, 0.395) infinite; }
+    .loadingbar.indeterminate:after {
+      content: '';
+      position: absolute;
+      background-color: #ffffff;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      will-change: left, right;
+      -webkit-animation: indeterminate-short 2.1s cubic-bezier(0.165, 0.84, 0.44, 1) infinite;
+              animation: indeterminate-short 2.1s cubic-bezier(0.165, 0.84, 0.44, 1) infinite;
+      -webkit-animation-delay: 1.15s;
+              animation-delay: 1.15s; }
+
+@-webkit-keyframes indeterminate {
+  0% {
+    left: -35%;
+    right: 100%; }
+  60% {
+    left: 100%;
+    right: -90%; }
+  100% {
+    left: 100%;
+    right: -90%; } }
+@keyframes indeterminate {
+  0% {
+    left: -35%;
+    right: 100%; }
+  60% {
+    left: 100%;
+    right: -90%; }
+  100% {
+    left: 100%;
+    right: -90%; } }
+@-webkit-keyframes indeterminate-short {
+  0% {
+    left: -200%;
+    right: 100%; }
+  60% {
+    left: 107%;
+    right: -8%; }
+  100% {
+    left: 107%;
+    right: -8%; } }
+@keyframes indeterminate-short {
+  0% {
+    left: -200%;
+    right: 100%; }
+  60% {
+    left: 107%;
+    right: -8%; }
+  100% {
+    left: 107%;
+    right: -8%; } }
+
+/* Other */
 
 .noTransition, .noTransition * {
     transition: none !important;

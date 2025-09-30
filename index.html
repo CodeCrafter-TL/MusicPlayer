@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MusicPlayer Like AM</title>
+    <title>AM-Like Lyrics Player</title>
     <link rel="stylesheet" href="./index.css" />
     <style>
         :root {
@@ -67,7 +67,7 @@
         <div class="rightcontent">
             <div class="lyricscontainer">
                 <div class="lyrics">
-                    <p class="lyric highlight">点击音乐图标选择音频、封面和lrc文件</p>
+                    <p class="highlight" id="choosefile_tip_en">点击左侧专辑封面选择曲目文件</p>
                 </div>
             </div>
         </div>
@@ -77,8 +77,43 @@
 
     <input type="file" accept="audio/* text/* image/* .lrc" class="audiofile" multiple />
     <audio class="player"></audio>
+    <div id="page_cover" class="hidden"></div>
+    <div id="choosefile_menu" class="hidden">
+        <div style="width: 100%;">
+            <p class="title">选择示例</p>
+            <div id="testaudio_list">
+                <p class="item died">列举测试曲目的过程未运行</p>
+                <p class="item died">请尝试重新打开菜单或在F12调试面板中截图控制台并反馈问题</p>
+            </div>
+        </div>
+        <div style="width: 100%;">
+            <p class="title">或者</p>
+            <div style="width: 100%; height: 60%;">
+                <div id="upload_btn" onclick="audioFileInput.click();">
+                    <p style="font-size: 2.5rem; font-weight: bold; position: relative; top: calc(50% - 2.5rem);">+</p>
+                    <p style="font-size: 1.2rem; position: relative; top: calc(30% - 1.2rem);">选择您的文件</p>
+                </div>
+                <p style="font-size: 0.9rem; color: #ffffffaa; margin: 5px 5px; text-align: center;">请一次性选择所有需要的文件</p>
+            </div>
+        </div>
+    </div>
+    <div id="loading_popup" class="hidden">
+        <p style="margin: 0.5rlh 0;">正在载入</p>
+        <p id="loading_tip">加载界面正在加载（啊？）</p>
+        <div class="loadingbar indeterminate" style="z-index: 502; margin: 20px 0; width: 5.4rlh; 
+        display: block; margin-left: auto; margin-right: auto;"></div>
+    </div>
 
     <script src="./index.js"></script>
+    <!-- <script>
+        lyrics = [
+            { time: 0, text: "Welcome!" },
+            { time: 1, text: "Hit the album cover to select files" }
+        ];
+        lyricsElement = document.querySelector(".lyrics");
+        lyricsElement.innerHTML = lyrics.map(line => `<p data-text="${line.text}">${line.text}</p>`).join('');
+        updateLyrics();
+    </script> -->
 </body>
 
 </html>

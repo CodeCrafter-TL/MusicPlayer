@@ -1,0 +1,10 @@
+{
+    "configurations": [
+        {
+            "name": "Python http.server",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "http.server"
+        }
+    ]
+}

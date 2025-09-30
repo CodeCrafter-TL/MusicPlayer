@@ -63,30 +63,25 @@ body {
 }
 
 .main {
-    width: calc(1600px * 0.8);
-    height: 900px;
-    display: inline-flex;
+    width: 100%;
+    height: 100vh;
+    display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: left;
-    /* align-self: center; */
-    transition: scale 0.3s ease;
-    /* margin-right: 20%;
-    margin-left: -5%; */
 }
 
 .leftcontent {
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    align-self: left;
-    /* margin-left: 24px; */
+
+    width: 45vw;
+    height: 100vh;
 }
 
 .svgcontainer {
-    width: 320px;
-    height: 320px;
+    width: 420px;
+    height: 420px;
     background: #e8e8e8;
     border-radius: 10px;
     overflow: hidden;
@@ -123,7 +118,7 @@ input[type="file"] {
 }
 
 .processbar {
-    width: 325px;
+    width: 425px;
     background: #fff9;
     height: 8px;
     overflow: hidden;
@@ -144,7 +139,7 @@ input[type="file"] {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: 325px;
+    width: 425px;
     color: #fff;
     text-shadow: 0 0 3px #0009;
 }
@@ -157,7 +152,12 @@ p {
     -webkit-user-select: auto;
     user-select: auto;
 }
-
+.conbox{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 .controls, .controls > * {
     display: flex;
     width: 32px;
@@ -175,39 +175,48 @@ p {
 }
 
 .rightcontent {
-    padding-left: 10%;
-    /* margin-right: 10%; */
-    flex: 1;
-    /* width: 50vw; */
+    width: 55%;
 }
 
 .lyricscontainer {
-    width: 100%;
-    height: 1080px;
+    height: 100vh;
     position: relative;
     z-index: 2;
 }
 
 .lyrics {
-    transform: translateY(250%);
     max-width: 100%;
     font-size: 24px;
     line-height: 40px;
     z-index: 2;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    color: #fff;
 }
 
+.lyrics > .item{
+    position: absolute;
+    padding: 20px;
+    
+    box-sizing: border-box;
+
+    background-color: transparent;
+    border-radius: 15px;
+        color: rgba(255, 255, 255, 0.2);
+
+    /*transition-timing-function: cubic-bezier(.19,.11,0,1);
+    transition: transform 0.5s;*/
+}
+
+.lyrics > .item > p{ 
+    font-size: 45px;
+
+}
+/*
 .lyrics p {
     position: relative;
     margin: 0;
     margin: 4% 0;
     will-change: opacity, font-weight, margin-left, margin-top, margin-bottom, transform;
     transition: opacity 0.75s cubic-bezier(0.25, 0.8, 0.25, 1),
-        /* font-size 0.75s cubic-bezier(0.25, 0.8, 0.25, 1), */
+      
         font-weight 0.75s cubic-bezier(0.25, 0.8, 0.25, 1),
         margin-left 0.75s cubic-bezier(0.25, 0.8, 0.25, 1),
         margin-top 0.6s cubic-bezier(.01,1.22,.97,1),
@@ -244,7 +253,7 @@ p {
     word-wrap: break-word;
     white-space: normal;
 }
-
+*/
 /* .lyrics p::after {
     content: attr(data-text);
     position: absolute;

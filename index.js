@@ -23,9 +23,13 @@ let width = 1600;
 let height = 900;
 let called = false;
 
-var mouse_pos = {"x": 0, "y": 0};
+// 常量
+const LINE_HEIGHT = 20;
+const LYRICS_OFFSET = window.innerHeight /3;
 
-function scaleElements(width, height) {
+let lastLyric = -1
+/*
+function mainDivScalePosition(width, height) {
     // width: 1280, height: 720 (Image loaded)
     // width: 325, height: 437 (Image unloaded)
     const scaleX = window.innerWidth / width;
@@ -63,8 +67,8 @@ function scaleElements(width, height) {
 window.addEventListener("resize", () => {
     scaleElements(width, height);
 });
-scaleElements(width, height);
-
+mainDivScalePosition(width, height);
+*/
 let bgImg = new Image();
 // bgImg.src = "./default.svg";
 let playing = false;
@@ -108,8 +112,8 @@ audioPlayer.addEventListener("loadedmetadata", () => {
         if (!lrcLoaded) {
             width = 325;
             height = 437;
-            window.dispatchEvent(new Event("resize"));
-            mainDiv.style.marginLeft = "0";
+           // window.dispatchEvent(new Event("resize"));
+           // mainDiv.style.marginLeft = "0";
         }
         playBtn.click();
     } else {
@@ -174,7 +178,15 @@ function loadFiles(files) {
                 lyrics = parsedData.lyrics;
                 allTimes = parsedData.allTimes;
                 lyricsElement = document.querySelector(".lyrics");
-                lyricsElement.innerHTML = lyrics.map(line => `<p class="lyrics" data-text="${line.text}">${line.text}</p>`).join('');
+                lyricsElement.innerHTML = "";
+                //lyricsElement.innerHTML = lyrics.map(line => `<p data-text="${line.text}">${line.text}</p>`).join('');
+                for (let i = 0; i < lyrics.length; i++) {
+                    lyricsElement.appendChild(lyrics[i].ele)
+                }
+                UpdateLyricsLayout(0,lyrics,0)
+                for (let i = 0; i < lyrics.length; i++) {
+                    lyrics[i].ele.style.transition = "transform 0.7s cubic-bezier(.19,.11,0,1),color 0.5s ease-in-out";
+                }
             };
             reader.readAsArrayBuffer(file);
             lrcLoaded = true;
@@ -214,6 +226,24 @@ audioPlayer.addEventListener("timeupdate", () => {
         process.style.width = `${(audioPlayer.currentTime / audioPlayer.duration) * 100}%`;
         startTime.textContent = formatTime(audioPlayer.currentTime);
         endTime.textContent = `-${formatTime(audioPlayer.duration - audioPlayer.currentTime)}`;
+        // 歌词触发计算
+        const cTime = audioPlayer.currentTime;
+        
+        let lList = [];
+        for (let i = 0; i < lyrics.length; i++) {
+            if (cTime >= lyrics[i].time) {
+                lList.push(lyrics[i]);
+            }
+        }
+        if (lList.length === 0) return;
+        if (lastLyric !== lList.length - 1) {
+           
+            UpdateLyricsLayout(lList.length - 1,lyrics,1);
+            console.log(lList[lList.length - 1].text);
+            
+            lastLyric = lList.length - 1
+        }
+
     }
 });
 
@@ -290,20 +320,25 @@ function parseLrc(lrcText) {
 
             allTimes.push(timeInSeconds);
 
+            const div = document.createElement('div');
+            div.className = 'item';
+            const p = document.createElement('p');
+            p.textContent = text;
+            div.appendChild(p);
             if (text) {
-                lrcArray.push({ time: timeInSeconds, text });
+                lrcArray.push({ time: timeInSeconds, text, ele: div });
             }
         }
     });
 
-    // mainDivScalePosition(width, height);
+    //mainDivScalePosition(width, height);
 
     return {
         lyrics: lrcArray,
         allTimes: allTimes
     };
 }
-
+/*
 function updateLyrics() {
     if (!playing) return;
 
@@ -412,11 +447,11 @@ function centerActiveLine(activeLine) {
 
     lyricsElement.style.transform = `translateY(${offset}px)`;
 }
-
+*/
 audioPlayer.addEventListener('play', () => {
-    requestAnimationFrame(updateLyrics);
+    //requestAnimationFrame(updateLyrics);
 });
-
+/*
 window.addEventListener('resize', () => {
     lyricsElement.classList.add("noTransition");
     updateLyrics();
@@ -424,7 +459,7 @@ window.addEventListener('resize', () => {
 });
 
 updateLyrics();
-
+*/
 function getDominantColors(imageData, colorCount = 5, minColorDistance = 100) {
     const pixels = imageData.data;
     const sampledColors = []; // 存储采样后的颜色（未去重）
@@ -560,88 +595,45 @@ async function selectTestAudio(testAudioName, testAudioDispName = "未知测试�
     setLoadingState(false);
 }
 
-async function choosefileMenuAddItems() {
-    list = document.getElementById("testaudio_list");
-    // console.log("Add items")
-    list.innerHTML = `<p class="item died">正在载入……</p>`;
-    items = await listTestAudio();
-    // list.innerHTML = `<p class="item died">Pick an example</p>`;
-    list.innerHTML = "";
-    if (Object.keys(items).length == 0) {
-        list.innerHTML += `<p class="item died" style="font-size: 1.1rem;">[没有测试曲目或加载失败]</p>`;
-        return false;
-    }
-    for (const [trackName, dirName] of Object.entries(items)) {
-        console.log(`Add item: ${trackName} - ${dirName}`);
-        list.innerHTML += "\n" + `<p class="item" onclick="selectTestAudio('${dirName}', '${trackName}');">${trackName}</p>`;
-    }
-}
+// 新增的函数
 
-function hideChoosefileMenu() {
-    const menu = document.getElementById("choosefile_menu");
-    menu.classList.add("hidden");
-    const cover = document.getElementById("page_cover");
-    cover.classList.add("hidden");
-}
-
-function showChoosefileMenu(event) {
-    // Get the menu prepared
-    choosefileMenuAddItems(menu);
-    // Show the menu
-    menu.style.left = `${event.clientX + 10}px`;
-    menu.style.top = `${event.clientY + 10}px`;
-    console.log(`Open menu at: left: "${event.clientX + 10}"; top: "${event.clientY + 10}"`);
-    menu.classList.remove("hidden");
-    // Show the page cover, and set when to hide it with the menu itself
-    const cover = document.getElementById("page_cover");
-    cover.classList.remove("hidden");
-    cover.onclick = (function() {hideChoosefileMenu();})
-}
-
-// Loading dialog
-
-var loadingChangeTipTimeout = null;
-
-function setLoadingState(state) {
-    const NEVER_CLOSE_LOADING_DLG = false;
-    console.log(`Setting loading state to ${state}`);
-    const tipText = document.getElementById("loading_tip");
-    if (state) {
-        cover.classList.remove("hidden");
-        cover.onclick = "";
-        loading_popup.classList.remove("hidden");
-        // Set loading tip (with delayed text changes)
-        tipText.textContent = "心急吃不了臭豆腐";
-        tipText.classList.remove("clickable");
-        loadingChangeTipTimeout = setTimeout(function () {
-            tipText.textContent = "真的有在加载哦……";
-            loadingChangeTipTimeout = setTimeout(function () {
-                tipText.textContent = "bro似乎是高ping战士 — 检查一下网络？";
-                loadingChangeTipTimeout = setTimeout(function () {
-                    tipText.textContent = "加载长到出奇？点我隐藏加载界面！";
-                    tipText.onclick = function(){
-                        setLoadingState(false);
-                        alert("请注意：加载任务仍在后台运作！" + 
-                              "若要结束它，请刷新整个页面。\n\n" + 
-                              "加载文件可能需要一些时间。然而，如果您已经数次经历这样的等待，请尝试检查您的" + 
-                              "网络环境和我们的服务器状态。\n" + 
-                              "如果您十分确定这是一个程序bug，请在GitHub上向我们反馈\n\n" + 
-                              "简中特供说明：正在加载的文件可能来自GitHub或其他境外服务器，若无法加载，请自备良好的网络环境。");
-                    };
-                    tipText.classList.add("clickable");
-                }, 20000);
-            }, 10000);
-        }, 5000);
-    } else if (!state) {
-        if (NEVER_CLOSE_LOADING_DLG) {
-            return;
+// 动态计算布局的函数
+function GetLyricsLayout(now, to, data) {
+    let res = 0;
+    // 判断滚动方向
+    if (to > now) { // 向下滚动
+        for (let i = now; i < to; i++) {
+            res += data[i].ele.offsetHeight + LINE_HEIGHT;
         }
-        cover.classList.add("hidden");
-        loading_popup.classList.add("hidden");
-        if (loadingChangeTipTimeout != null) {
-            clearTimeout(loadingChangeTipTimeout);
+    } else { // 向上滚动
+        for (let i = now; i > to; i--) {
+            res -= data[i - 1].ele.offsetHeight + LINE_HEIGHT;
         }
-    } else {
-        console.warn("Invalid state for loading screen!");
+    }
+
+    // 使用偏移值作为初始位置，确保歌词居中或位于正确位置
+    return res + LYRICS_OFFSET;
+}
+
+function UpdateLyricsLayout(index, data,init = 1) {
+    
+    for (let i = 0; i < data.length; i++) {
+
+        if (i === index && init) {
+            data[i].ele.style.color = "rgba(255,255,255,1)"
+            
+        }else{
+            data[i].ele.style.color = "rgba(255,255,255,0.2)"
+        }
+        data[i].ele.style.filter = `blur(${Math.abs(i - index)}px)`
+        const position = GetLyricsLayout(index, i, data);
+        
+        let n = (i- index)+1
+        if (n>10){
+            n=0
+        }
+        setTimeout(() => {
+            data[i].ele.style.transform = `translateY(${position}px)`;
+        },  (n * 70 - n * 10) * init);
     }
 }

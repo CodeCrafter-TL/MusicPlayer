@@ -15,12 +15,9 @@ const lyricsContainer = document.querySelector(".lyricscontainer");
 const rightContent = document.querySelector(".rightcontent");
 const mainDiv = document.querySelector(".main");
 const processedLines = new Set();
-const menu = document.getElementById("choosefile_menu");
-const cover = document.getElementById("page_cover");
-const loading_popup = document.getElementById("loading_popup");
 let needProcess = undefined;
-let width = 1600;
-let height = 900;
+let width = 1280;
+let height = 720;
 let called = false;
 
 // 常量
@@ -32,40 +29,19 @@ let lastLyric = -1
 function mainDivScalePosition(width, height) {
     // width: 1280, height: 720 (Image loaded)
     // width: 325, height: 437 (Image unloaded)
-    const scaleX = window.innerWidth / width;
-    const scaleY = window.innerHeight / height;
-    const scale = Math.min(scaleX, scaleY);
-
-    // svgcontainer.style.transform = `scale(${scale})`;
+    const scaleX = mainDiv.clientWidth / width;
+    const scaleY = mainDiv.clientHeight / height;
+    const scale = Math.max(scaleX, scaleY);
 
     mainDiv.style.transform = `scale(${scale})`;
-    // loading_popup.style.transform = `scale(${scale})`;
-    // To set the size of the menu
-    for (const sheet of document.styleSheets) {
-        try {
-            const rules = sheet.cssRules || sheet.rules;
-            for (const rule of rules) {
-                if (rule.selectorText === "#choosefile_menu") {
-                    rule.style.transform = `scale(${scale})`;
-                } else if (rule.selectorText === "#choosefile_menu.hidden") {
-                    rule.style.transform = `scale(${scale * 0.5})`;
-                }
-            }
-        } catch (e) {
-            // console.warn('Failed to access stylesheet: ', sheet.href);
-            null;
-        }
-    }
-    // console.log(width, window.innerWidth, height, window.innerHeight);
-    console.log(`Scale elements to ${scale * 100}%`);
-    // mainDiv.style.top = `calc(50% - ${mainDiv.clientHeight / 2}px)`;
-    // mainDiv.style.left = `calc(80% - ${mainDiv.clientWidth / 2}px)`;
+    mainDiv.style.top = `calc(50% - ${mainDiv.clientHeight / 2}px)`;
+    mainDiv.style.left = `calc(50% - ${mainDiv.clientWidth / 2}px)`;
 
-    // rightContent.style.paddingLeft = `${10 / scaleX}%`;
+    rightContent.style.paddingLeft = `${10 / scaleX}%`;
 }
 
 window.addEventListener("resize", () => {
-    scaleElements(width, height);
+    mainDivScalePosition(width, height);
 });
 mainDivScalePosition(width, height);
 */
@@ -82,7 +58,7 @@ let imageLoaded = false;
 let audioLoaded = false;
 let lrcLoaded = false;
 
-svgcontainer.addEventListener("click", async (event) => {
+svgcontainer.addEventListener("click", async () => {
     // const filePaths = await window.electron.openDialog();
     // if (filePaths && filePaths.length > 0) {
     //     // 处理选中的文件
@@ -92,8 +68,7 @@ svgcontainer.addEventListener("click", async (event) => {
     //         audioFileInput.dispatchEvent(new CustomEvent('change', { detail: event }));
     //     }
     // }
-    // audioFileInput.click();
-    showChoosefileMenu(event);
+    audioFileInput.click();
 });
 
 audioPlayer.addEventListener("loadedmetadata", () => {
@@ -117,20 +92,12 @@ audioPlayer.addEventListener("loadedmetadata", () => {
         }
         playBtn.click();
     } else {
-        alert("Choose audio file!");
+        alert("请选择音频文件");
     }
 });
 
-audioFileInput.addEventListener("change", async (event) => {
-    hideChoosefileMenu();
-    setLoadingState(true);
+audioFileInput.addEventListener("change", (event) => {
     const files = event.target.files;
-    await loadFiles(files);
-    setLoadingState(false);
-});
-
-function loadFiles(files) {
-    console.log(`Load files: `, files);
     disableLyric();
     for (let i = 0; i < files.length; i++) {
         const file = files[i];
@@ -192,16 +159,16 @@ function loadFiles(files) {
             lrcLoaded = true;
         }
     }
-}
+});
 
 function disableLyric() {
     rightContent.style.display = "none";
-    // leftContent.style.paddingLeft = "none";
+    leftContent.style.paddingLeft = "none";
 }
 
 function enableLyric() {
     rightContent.style.display = "";
-    // leftContent.style.paddingLeft = "";
+    leftContent.style.paddingLeft = "";
 }
 
 function fetchLrcFile(filename) {
@@ -342,9 +309,7 @@ function parseLrc(lrcText) {
 function updateLyrics() {
     if (!playing) return;
 
-    const currentTime = audioPlayer.currentTime + (0.75 / 2);
-    // To make lyrics get 0.75/2 seconds (half of the duration of animations) 
-    // advanced than audio, in order to avoid delay due to animation.
+    const currentTime = audioPlayer.currentTime;
     const lyricLines = lyricsElement.querySelectorAll('*');
     if (called) {
         lyricsElement.style.transition = "all 1s cubic-bezier(0.25, 0.8, 0.25, 1)";
@@ -381,7 +346,7 @@ function updateLyrics() {
         requestAnimationFrame(() => {
             setTimeout(() => {
                 centerActiveLine(lyricLines[activeIndex]);
-            }, 70);
+            }, 120);
         });
     }
 
@@ -395,7 +360,7 @@ function applyActiveLineStyle(line, index, allLines, thisTime) {
         line.style.filter = "none";
         line.style.marginLeft = "0";
         line.style.visibility = "visible";
-        line.style.opacity = "1";
+        line.style.opacity = "0.6";
         line.style.setProperty("--type-time", `${thisTime / 2}s`);
     }, 300);
 
@@ -406,21 +371,12 @@ function applyActiveLineStyle(line, index, allLines, thisTime) {
         const end = Math.min(allLines.length - 1, index + 3);
         const displayingLines = Array.from(allLines).slice(start, end + 1);
 
-        // Commented by rgzz666: These code seems controls the line spacing.
-        //                       However no code comments are provided by the original author.
         displayingLines.forEach((nline, i) => {
             setTimeout(() => {
-                // Commented by rgzz666: This place seems controls the "bouncing back" effect.
-                //                       BTW code comments are always suggested to be written.
-                // Commented by rgzz666: According to my own experiments, line.clientHeight is 40px 
-                //                       per line, and IS NOT affected by the browser zoom or size.
-                //                       Therefore hard-code it to 40px can avoid excessive bouncing 
-                //                       effect on multi-line lyrics.
-                nline.style.marginTop = `40px`;
-                // nline.style.marginTop = `${line.clientHeight}px`;
+                nline.style.marginTop = `${line.clientHeight}px`;
 
                 setTimeout(() => {
-                    nline.style.marginTop = "0.7rlh";
+                    nline.style.marginTop = "4%";
                 }, 250);
             }, i * 75);
         });
@@ -473,32 +429,20 @@ function getDominantColors(imageData, colorCount = 5, minColorDistance = 100) {
         sampledColors.push([r, g, b]);
     }
 
-    for (const sampleIndex in sampledColors) {
-        // console.log(sampledColors[sampleIndex])
-        const sample = sampledColors[sampleIndex]
-        const r = sample[0]; const g = sample[1]; const b = sample[2];
-        // console.log(`Considering color: (${r},${g},${b})`);
-        const isPassed = dominantColors.every(([er, eg, eb]) => {
+    sampledColors.forEach(([r, g, b]) => {
+        const isUnique = dominantColors.every(([er, eg, eb]) => {
             const distance = Math.sqrt((r - er) ** 2 + (g - eg) ** 2 + (b - eb) ** 2);
-            const isUnique = (distance >= minColorDistance); // Avoid repeated colors
-            const isTooLight = (r > 200 && g > 200 && b>200); // Avoid light colors
-            // if (isTooLight) {console.log(`Avoided color (${r},${g},${b}) as it is too light for background.`);}
-            return (isUnique && (!isTooLight)); // 颜色差异足够大且不要太浅才保留
+            return distance >= minColorDistance; // 颜色差异足够大才保留
         });
 
-        if (isPassed) {
-            // console.log(`(${r},${g},${b}) is selected, with isPassed=${isPassed}`);
+        if (isUnique) {
             dominantColors.push([r, g, b]);
-            if (dominantColors.length >= colorCount) {
-                console.log(`Stopped picking colors as there are already enough for the requirement of ${colorCount} colors.`);
-                break;
-            } // 提前终止
+            if (dominantColors.length >= colorCount) return; // 提前终止
         }
 
-        // console.log(r, g, b);
-    }
+        console.log(r, g, b)
+    });
 
-    console.log("Chosen background colors: ", dominantColors.map(([r, g, b]) => `(${r},${g},${b})`));
     return dominantColors.map(([r, g, b]) => `rgba(${r},${g},${b},0.9)`);
 }
 
@@ -509,14 +453,14 @@ bgImg.onload = () => {
     svgcontainer.style.backgroundPosition = "center";
     svgcontainer.style.backgroundRepeat = "no-repeat";
 
-    const tempCanvas = document.createElement('canvas');
-    const tempCtx = tempCanvas.getContext('2d');
+    const tempCanvas = document.createElement('canvas')
+    const tempCtx = tempCanvas.getContext('2d')
 
-    tempCanvas.width = 100;
-    tempCanvas.height = 100 * (bgImg.height / bgImg.width);
+    tempCanvas.width = 100
+    tempCanvas.height = 100 * (bgImg.height / bgImg.width)
 
-    tempCtx.drawImage(bgImg, 0, 0, tempCanvas.width, tempCanvas.height);
-    const imageData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+    tempCtx.drawImage(bgImg, 0, 0, tempCanvas.width, tempCanvas.height)
+    const imageData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height)
 
     let colors = getDominantColors(imageData);
     document.body.style.setProperty('--background', colors[0]);
@@ -530,70 +474,9 @@ bgImg.onload = () => {
     document.body.style.setProperty('--color3-rgba', colors[2].replace("0.9", "0"));
     document.body.style.setProperty('--color4-rgba', colors[3].replace("0.9", "0"));
     document.body.style.setProperty('--color5-rgba', colors[4].replace("0.9", "0"));
-};
-
-// Code for new file choosing menu
-async function createFileFromURL(url, filename) {
-    try{
-        const response = await fetch(url);
-        if (!response.ok) {
-            console.log("Fetch error!");
-            return false;
-        }
-        const blob = await response.blob();
-        const file = new File([blob], filename, { type: blob.type });
-        return file;
-    } catch (error) {
-        return false;
-    }
 }
 
-async function getTestAudioFiles(testAudioName) {
-    const files = ["audio", "cover", "lyrics"];
-    const possible_extensions = {"audio": ["mp3", "flac", "ape", "wav", "aac", "m4a", "mid", "ogg", "alac", "opus", "wma", "aiff"],
-                                 "cover": ["jpg", "jpeg", "png", "gif", "giff", "bmp", "webp", "tiff", "avif"],
-                                 "lyrics": ["lrc"]
-                                };
-    fileObjects = [];
-    for (const filename of files) {
-        for (const extension of possible_extensions[filename]) {
-            fileObject = await createFileFromURL(`./TestAudio/${testAudioName}/${filename}.${extension}`, `${filename}.${extension}`);
-            console.log(`${filename}.${extension} ==> `, fileObject);
-            if (fileObject != false) {
-                fileObjects.push(fileObject);
-                break;
-            }
-        };
-    };
-    return fileObjects;
-}
 
-async function listTestAudio() {
-    try {
-        const response = await fetch('./TestAudio/TestAudioList.json' + `?nocache=${Math.random()}`);
-        if (!response.ok) {
-            console.warn(response);
-            throw new Error('Failed to fetch TestAudioList.json');
-        }
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error('Failed to read test audio list: ', error);
-        return {};
-    }
-}
-
-async function selectTestAudio(testAudioName, testAudioDispName = "未知测试曲目") {
-    console.log(`Selected test audio: ${testAudioName}`);
-    hideChoosefileMenu();
-    setLoadingState(true);
-    const testAudioFiles = await getTestAudioFiles(testAudioName);
-    await loadFiles(testAudioFiles);
-    // Set track name text
-    const name_disp = document.getElementsByClassName("name")[0];
-    name_disp.textContent = testAudioDispName;
-    setLoadingState(false);
-}
 
 // 新增的函数
 
